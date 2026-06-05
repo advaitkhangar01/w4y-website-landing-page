@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initThemeColorInterpolation();
   initMagneticCTAs();
   initGeneralRevealCards();
-  initMouseGlow();
   
   // Sandbox Utilities
   initSignatureSandbox();
@@ -1400,35 +1399,6 @@ document.head.appendChild(style);
 /* ==========================================
    15. Elite Mouse-Tracking Spotlight Glow
    ========================================== */
-function initMouseGlow() {
-  const glow = document.getElementById('mouse-glow-light');
-  if (!glow) return;
-
-  // Optimize mouse tracker using quickTo to avoid object creation overhead on mousemove
-  const quickX = gsap.quickTo(glow, "x", { duration: 0.4, ease: "power2.out" });
-  const quickY = gsap.quickTo(glow, "y", { duration: 0.4, ease: "power2.out" });
-
-  // Track cursor position with smooth delay (0.4s lag vector)
-  window.addEventListener('mousemove', (e) => {
-    quickX(e.clientX);
-    quickY(e.clientY);
-  });
-
-  // Fade on mouse enters/leaves the window
-  document.addEventListener('mouseenter', () => {
-    gsap.to(glow, { opacity: 1, duration: 0.4 });
-  });
-
-  document.addEventListener('mouseleave', () => {
-    gsap.to(glow, { opacity: 0, duration: 0.4 });
-  });
-
-  // Trigger initial fade if pointer starts moving
-  window.addEventListener('mouseover', function initFade() {
-    gsap.to(glow, { opacity: 1, duration: 0.4 });
-    window.removeEventListener('mouseover', initFade);
-  });
-}
 
 /* ==========================================
    16. Three.js Interactive 3D Architectural WebGL Scene
@@ -1457,9 +1427,9 @@ function initHero3DWebGLScene() {
   camera.position.set(0, 14.5, 16); // Elevated camera to match new higher baseline
   camera.lookAt(0, 11.0, -2); // Centered camera framing on the high-level baseline
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+  const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, powerPreference: "high-performance" });
   renderer.setSize(width, height);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(1);
   container.appendChild(renderer.domElement);
 
   // Fade in container smoothly once loaded

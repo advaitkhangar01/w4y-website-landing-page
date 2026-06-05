@@ -212,72 +212,32 @@ function initStickyStackCards() {
 function initPinnedSplitConsole() {
   const narrativeCards = gsap.utils.toArray(".console-narrative-col .narrative-card");
   const consoleImgs = document.querySelectorAll('.console-img');
-  const consoleVideos = document.querySelectorAll('.console-video');
   const consoleHeading = document.getElementById('console-heading');
   const consoleSubheading = document.getElementById('console-subheading');
   const activeRoleName = document.getElementById('active-role-name');
   const quickBtns = document.querySelectorAll('.quick-btn');
-  
-  // Custom video elements controls
-  const controlLayer = document.querySelector('.video-control-layer');
-  const playPauseBtn = document.getElementById('vid-play-pause');
-  const playIcon = playPauseBtn.querySelector('.lucide-play');
-  const pauseIcon = playPauseBtn.querySelector('.lucide-pause');
-  const timelineProgress = document.getElementById('vid-timeline-progress');
-  const timelineTrack = document.getElementById('vid-timeline-track');
-  const timeDisplay = document.getElementById('vid-time-display');
-
-  let activeVideoElement = null;
 
   // Metadata logs
   const contentMeta = {
     admin: {
       title: "Administrator Command Center",
       subtitle: "Absolute administrative authorization & staff logs checks.",
-      tag: "Admin Control",
-      type: "image"
+      tag: "Admin Control"
     },
     accounts: {
       title: "Accounts & Bookkeeping Room",
       subtitle: "payroll compliance matrices & local/state tax invoices compiling.",
-      tag: "Accounts",
-      type: "image"
+      tag: "Accounts"
     },
     designhead: {
       title: "Design & Project Workspace",
       subtitle: "Manage sequential construction phases and blueprints.",
-      tag: "Design Head",
-      type: "image"
+      tag: "Design Head"
     },
     employee: {
       title: "Employee Portal Dashboard",
       subtitle: "Clock coordinates check, tasks, and leave logs.",
-      tag: "Employee Portal",
-      type: "image"
-    },
-    'vid-attendance': {
-      title: "Geofenced Site Clock-In",
-      subtitle: "Automatic check-in zone mapping on building sites.",
-      tag: "Attendance Module",
-      type: "video"
-    },
-    'vid-projects': {
-      title: "Sequential CRM Steps",
-      subtitle: "Preventing stage skips with automatic lock safeguards.",
-      tag: "Projects Module",
-      type: "video"
-    },
-    'vid-accounting': {
-      title: "Operating Financials Ledger",
-      subtitle: "Operating profit calculations locked after 15 days.",
-      tag: "Financials Ledger",
-      type: "video"
-    },
-    'vid-invoice': {
-      title: "Invoice Splits Studio",
-      subtitle: "Digital signature canvas and local tax split compiles.",
-      tag: "Invoicing Module",
-      type: "video"
+      tag: "Employee Portal"
     }
   };
 
@@ -309,106 +269,15 @@ function initPinnedSplitConsole() {
     consoleSubheading.textContent = meta.subtitle;
     activeRoleName.innerHTML = `<span class="active-role-indicator"></span>${meta.tag}`;
 
-    // Stop current videos
-    stopAllVideos();
-
-    if (meta.type === 'image') {
-      // Hide video control
-      controlLayer.classList.remove('active');
-      
-      // Toggle images cross-fade
-      consoleImgs.forEach(img => {
-        if (img.dataset.role === triggerKey) {
-          img.classList.add('active');
-        } else {
-          img.classList.remove('active');
-        }
-      });
-      // Hide all videos
-      consoleVideos.forEach(vid => vid.classList.remove('active'));
-    } else {
-      // Toggle videos cross-fade
-      consoleImgs.forEach(img => img.classList.remove('active'));
-      
-      consoleVideos.forEach(vid => {
-        if (vid.dataset.module === triggerKey) {
-          vid.classList.add('active');
-          activeVideoElement = vid;
-        } else {
-          vid.classList.remove('active');
-        }
-      });
-
-      // Play matching video
-      if (activeVideoElement) {
-        activeVideoElement.play()
-          .then(() => updatePlayIcon(true))
-          .catch(() => updatePlayIcon(false));
-
-        // Show player controls
-        controlLayer.classList.add('active');
-
-        // Binds event listeners
-        activeVideoElement.ontimeupdate = () => {
-          if (activeVideoElement.duration) {
-            const pct = (activeVideoElement.currentTime / activeVideoElement.duration) * 100;
-            timelineProgress.style.width = `${pct}%`;
-            timeDisplay.textContent = `${formatTime(activeVideoElement.currentTime)} / ${formatTime(activeVideoElement.duration)}`;
-          }
-        };
-
-        activeVideoElement.onended = () => updatePlayIcon(false);
-      }
-    }
-  }
-
-  function stopAllVideos() {
-    consoleVideos.forEach(vid => {
-      vid.pause();
-      vid.currentTime = 0;
-    });
-    activeVideoElement = null;
-    updatePlayIcon(false);
-  }
-
-  function updatePlayIcon(isPlaying) {
-    if (isPlaying) {
-      playIcon.style.display = 'none';
-      pauseIcon.style.display = 'block';
-    } else {
-      playIcon.style.display = 'block';
-      pauseIcon.style.display = 'none';
-    }
-  }
-
-  function formatTime(secs) {
-    const m = Math.floor(secs / 60);
-    const s = Math.floor(secs % 60);
-    return `${m}:${s < 10 ? '0' : ''}${s}`;
-  }
-
-  // Play Pause Toggle click
-  playPauseBtn.addEventListener('click', () => {
-    if (activeVideoElement) {
-      if (activeVideoElement.paused) {
-        activeVideoElement.play();
-        updatePlayIcon(true);
+    // Toggle images cross-fade
+    consoleImgs.forEach(img => {
+      if (img.dataset.role === triggerKey) {
+        img.classList.add('active');
       } else {
-        activeVideoElement.pause();
-        updatePlayIcon(false);
+        img.classList.remove('active');
       }
-    }
-  });
-
-  // scrubbing timeline track
-  timelineTrack.addEventListener('click', (e) => {
-    if (activeVideoElement && activeVideoElement.duration) {
-      const rect = timelineTrack.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const pct = clickX / rect.width;
-      activeVideoElement.currentTime = pct * activeVideoElement.duration;
-    }
-  });
+    });
+  }
 
   // Bind ScrollTriggers to scroll-based narrative cards
   narrativeCards.forEach((card) => {
@@ -1891,20 +1760,16 @@ function initConsoleLightbox() {
   const lightbox = document.getElementById('console-lightbox');
   const closeBtn = document.getElementById('lightbox-close-btn');
   const lightboxImg = document.getElementById('lightbox-img');
-  const lightboxVid = document.getElementById('lightbox-vid');
   
   if (!wrapper || !lightbox) return;
 
   wrapper.addEventListener('click', () => {
     // 1. Find the active media element inside the console screen
     const activeImg = document.querySelector('.console-img.active');
-    const activeVid = document.querySelector('.console-video.active');
 
     // Reset lightbox media states
     lightboxImg.classList.remove('active');
-    lightboxVid.classList.remove('active');
     lightboxImg.src = '';
-    lightboxVid.src = '';
     
     let mediaFound = false;
 
@@ -1913,19 +1778,6 @@ function initConsoleLightbox() {
       lightboxImg.src = activeImg.getAttribute('src');
       lightboxImg.classList.add('active');
       mediaFound = true;
-    } else if (activeVid && activeVid.classList.contains('active')) {
-      // It's a module screen recording video
-      lightboxVid.src = activeVid.getAttribute('src');
-      lightboxVid.classList.add('active');
-      mediaFound = true;
-      
-      // Sync video currentTime and play state if possible
-      lightboxVid.currentTime = activeVid.currentTime;
-      
-      // Pause background video while lightbox is active
-      activeVid.pause();
-      
-      lightboxVid.play().catch(() => {});
     }
 
     if (mediaFound) {
@@ -1942,18 +1794,6 @@ function initConsoleLightbox() {
     lightbox.classList.remove('active');
     lightbox.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
-    
-    // Stop lightbox video and resume active background video
-    if (lightboxVid.classList.contains('active')) {
-      lightboxVid.pause();
-      
-      const activeVid = document.querySelector('.console-video.active');
-      if (activeVid) {
-        // Sync time back and play
-        activeVid.currentTime = lightboxVid.currentTime;
-        activeVid.play().catch(() => {});
-      }
-    }
   }
 
   // Close on close button click

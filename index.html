@@ -248,51 +248,7 @@
             <button class="btn btn-secondary btn-sm select-narrative-btn" data-trigger="employee">Explore Staff View</button>
           </div>
 
-          <!-- Feature Walkthroughs Section Header -->
-          <div class="narrative-divider">
-            <span class="narrative-group-title">Module Walkthroughs</span>
-            <p>Scroll further to play automated video screen records demonstrating the platform in actual action.</p>
-          </div>
 
-          <!-- Narrative Card 5: Smart Attendance Video -->
-          <div class="narrative-card" data-trigger="vid-attendance">
-            <span class="narrative-badge">VIDEO DEMO</span>
-            <h3>Geofenced Site Clock-In</h3>
-            <p>
-              Leverages the browser Geolocation API to capture user coordinates and verify them against corporate office bounds or building sites.
-            </p>
-            <button class="btn btn-accent btn-sm select-narrative-btn" data-trigger="vid-attendance"><i data-lucide="play"></i> Watch Walkthrough</button>
-          </div>
-
-          <!-- Narrative Card 6: Sequential CRM Video -->
-          <div class="narrative-card" data-trigger="vid-projects">
-            <span class="narrative-badge">VIDEO DEMO</span>
-            <h3>Sequential Stage Checkouts</h3>
-            <p>
-              Projects advance sequentially (Interior, Construction, Finishing). Autolock safeguards prevent skipping ahead if preceding milestones are left incomplete.
-            </p>
-            <button class="btn btn-accent btn-sm select-narrative-btn" data-trigger="vid-projects"><i data-lucide="play"></i> Watch Walkthrough</button>
-          </div>
-
-          <!-- Narrative Card 7: P&L Control Ledger Video -->
-          <div class="narrative-card" data-trigger="vid-accounting">
-            <span class="narrative-badge">VIDEO DEMO</span>
-            <h3>P&L Financial Command</h3>
-            <p>
-              Consolidates contract values, unbilled retained values, office expenses, and collected payments in one clear balance board. Locked after 15 days.
-            </p>
-            <button class="btn btn-accent btn-sm select-narrative-btn" data-trigger="vid-accounting"><i data-lucide="play"></i> Watch Walkthrough</button>
-          </div>
-
-          <!-- Narrative Card 8: Invoices Canvas Video -->
-          <div class="narrative-card" data-trigger="vid-invoice">
-            <span class="narrative-badge">VIDEO DEMO</span>
-            <h3>Interactive Invoicing Studio</h3>
-            <p>
-              Calculates CGST/SGST (9%+9%) or IGST (18%) tax splitting.pre-populates clients data and embeds handwritten signatures written directly on-screen.
-            </p>
-            <button class="btn btn-accent btn-sm select-narrative-btn" data-trigger="vid-invoice"><i data-lucide="play"></i> Watch Walkthrough</button>
-          </div>
 
         </div>
 
@@ -319,23 +275,6 @@
                 <img src="/assets/images/designHead_dashboard.png" alt="Design Head View" class="console-img" data-role="designhead">
                 <img src="/assets/images/employee_dashboard.png" alt="Employee View" class="console-img" data-role="employee">
 
-                <!-- Videos Layer (Module-Based) -->
-                <video src="/assets/videos/attendance_section.mp4" class="console-video" data-module="vid-attendance" loop muted preload="none"></video>
-                <video src="/assets/videos/project_section.mp4" class="console-video" data-module="vid-projects" loop muted preload="none"></video>
-                <video src="/assets/videos/accounting_section.mp4" class="console-video" data-module="vid-accounting" loop muted preload="none"></video>
-                <video src="/assets/videos/invoice_section.mp4" class="console-video" data-module="vid-invoice" loop muted preload="none"></video>
-
-                <!-- Video Control Bar Overlay (Only active when playing videos) -->
-                <div class="video-control-layer">
-                  <button class="vid-btn" id="vid-play-pause" title="Play/Pause">
-                    <i data-lucide="play" class="lucide-play"></i>
-                    <i data-lucide="pause" class="lucide-pause" style="display:none;"></i>
-                  </button>
-                  <div class="vid-timeline-track" id="vid-timeline-track">
-                    <div class="vid-timeline-progress" id="vid-timeline-progress"></div>
-                  </div>
-                  <div class="vid-time-display" id="vid-time-display">0:00 / 0:00</div>
-                </div>
               </div>
             </div>
 
@@ -347,8 +286,6 @@
                 <button class="quick-btn" data-target="accounts">Accounts</button>
                 <button class="quick-btn" data-target="designhead">Design</button>
                 <button class="quick-btn" data-target="employee">Staff</button>
-                <button class="quick-btn highlight" data-target="vid-attendance">Attendance Video</button>
-                <button class="quick-btn highlight" data-target="vid-invoice">Invoice Video</button>
               </div>
             </div>
 
@@ -1388,8 +1325,7 @@
   <div id="console-lightbox" class="lightbox-overlay" aria-hidden="true" role="dialog">
     <span class="lightbox-close" id="lightbox-close-btn" aria-label="Close zoomed view">&times;</span>
     <div class="lightbox-content-wrapper" id="lightbox-content-wrapper">
-      <img id="lightbox-img" class="lightbox-media" src="" alt="Zoomed View">
-      <video id="lightbox-vid" class="lightbox-media" src="" loop controls muted></video>
+       <img id="lightbox-img" class="lightbox-media" src="" alt="Zoomed View">
     </div>
   </div>
 

@@ -80,12 +80,13 @@ function initLenisSmoothScroll() {
   // Hook ScrollTrigger updates to Lenis scroll
   lenis.on('scroll', ScrollTrigger.update);
 
-  // Link Lenis to GSAP ticker loop
-  gsap.ticker.add((time) => {
-    lenis.raf(time * 1000);
-  });
+  // Standard requestAnimationFrame loop for Lenis (smoother, avoids ticker desync)
+  function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
 
-  gsap.ticker.lagSmoothing(0);
   return lenis;
 }
 
@@ -186,7 +187,7 @@ function initStickyStackCards() {
       });
     }
 
-    // We scale down and blur previous cards as next cards stack on top
+    // We scale down previous cards as next cards stack on top
     if (index === cards.length - 1) return; // Last card stays flat
     
     const nextCard = cards[index + 1];
@@ -194,7 +195,6 @@ function initStickyStackCards() {
     gsap.to(card, {
       scale: 0.94 - (cards.length - 1 - index) * 0.02,
       opacity: 0.85,
-      filter: "blur(2px)",
       ease: "none",
       scrollTrigger: {
         trigger: nextCard,
@@ -449,30 +449,21 @@ function initPinnedSplitConsole() {
    6. Theme Color Interpolation (Scroll-driven)
    ========================================== */
 function initThemeColorInterpolation() {
-  const glow = document.getElementById('mouse-glow-light');
   ScrollTrigger.create({
     trigger: "#console",
     start: "top 60%",
     end: "bottom 35%",
     onEnter: () => {
       document.body.classList.add('dark-theme');
-      gsap.to("body", { backgroundColor: "#0F172A", color: "#F5F3EF", duration: 0.6 });
-      if (glow) gsap.to(glow, { background: "radial-gradient(circle, rgba(163, 177, 138, 0.12) 0%, transparent 70%)", duration: 0.6 });
     },
     onLeave: () => {
       document.body.classList.remove('dark-theme');
-      gsap.to("body", { backgroundColor: "#F5F3EF", color: "#334155", duration: 0.6 });
-      if (glow) gsap.to(glow, { background: "radial-gradient(circle, rgba(214, 204, 194, 0.35) 0%, transparent 70%)", duration: 0.6 });
     },
     onEnterBack: () => {
       document.body.classList.add('dark-theme');
-      gsap.to("body", { backgroundColor: "#0F172A", color: "#F5F3EF", duration: 0.6 });
-      if (glow) gsap.to(glow, { background: "radial-gradient(circle, rgba(163, 177, 138, 0.12) 0%, transparent 70%)", duration: 0.6 });
     },
     onLeaveBack: () => {
       document.body.classList.remove('dark-theme');
-      gsap.to("body", { backgroundColor: "#F5F3EF", color: "#334155", duration: 0.6 });
-      if (glow) gsap.to(glow, { background: "radial-gradient(circle, rgba(214, 204, 194, 0.35) 0%, transparent 70%)", duration: 0.6 });
     }
   });
 }

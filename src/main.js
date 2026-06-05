@@ -50,6 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Sandbox Utilities
   initSignatureSandbox();
+  initSandboxTabs();
+  initRoiCalculator();
   initPricingToggle();
   initFaqAccordions();
   initAttendanceCalendar();
@@ -792,6 +794,85 @@ function initSignatureSandbox() {
 }
 
 /* ==========================================
+   9.5 Sandbox Tab Switcher
+   ========================================== */
+function initSandboxTabs() {
+  const btnSignature = document.getElementById('tab-btn-signature');
+  const btnRoi = document.getElementById('tab-btn-roi');
+  const panelSignature = document.getElementById('sandbox-panel-signature');
+  const panelRoi = document.getElementById('sandbox-panel-roi');
+
+  if (!btnSignature || !btnRoi || !panelSignature || !panelRoi) return;
+
+  btnSignature.addEventListener('click', () => {
+    btnSignature.classList.add('active');
+    btnRoi.classList.remove('active');
+    panelSignature.style.display = 'block';
+    panelRoi.style.display = 'none';
+  });
+
+  btnRoi.addEventListener('click', () => {
+    btnRoi.classList.add('active');
+    btnSignature.classList.remove('active');
+    panelSignature.style.display = 'none';
+    panelRoi.style.display = 'block';
+  });
+}
+
+/* ==========================================
+   9.6 Operations ROI Calculator
+   ========================================== */
+function initRoiCalculator() {
+  const sliderTeam = document.getElementById('roi-slider-team');
+  const sliderRate = document.getElementById('roi-slider-rate');
+  const sliderHours = document.getElementById('roi-slider-hours');
+
+  const valTeam = document.getElementById('roi-val-team');
+  const valRate = document.getElementById('roi-val-rate');
+  const valHours = document.getElementById('roi-val-hours');
+
+  const outTime = document.getElementById('roi-out-time');
+  const outCapital = document.getElementById('roi-out-capital');
+  const outLeakage = document.getElementById('roi-out-leakage');
+  const ctaBtn = document.getElementById('roi-cta-btn');
+
+  if (!sliderTeam || !sliderRate || !sliderHours || !outTime || !outCapital || !outLeakage || !ctaBtn) return;
+
+  function recalculate() {
+    const teamSize = parseInt(sliderTeam.value);
+    const hourlyRate = parseInt(sliderRate.value);
+    const manualHours = parseInt(sliderHours.value);
+
+    // Update labels
+    valTeam.textContent = `${teamSize} staff member${teamSize > 1 ? 's' : ''}`;
+    valRate.textContent = `₹${hourlyRate.toLocaleString('en-IN')} / hr`;
+    valHours.textContent = `${manualHours} hour${manualHours > 1 ? 's' : ''}`;
+
+    // Math
+    const totalTimeSaved = Math.round(manualHours * 4.3 * teamSize);
+    const capitalSaved = Math.round(totalTimeSaved * hourlyRate);
+    // Leakage assumed at 3% timesheet discrepancy on typical 160 hrs month
+    const leakageSafeguard = Math.round(0.03 * (teamSize * hourlyRate * 160));
+    const totalBenefit = capitalSaved + leakageSafeguard;
+
+    // Direct text update for instant response
+    outTime.textContent = `${totalTimeSaved.toLocaleString('en-IN')} hrs`;
+    outCapital.textContent = `₹${capitalSaved.toLocaleString('en-IN')}`;
+    outLeakage.textContent = `₹${leakageSafeguard.toLocaleString('en-IN')}`;
+    
+    ctaBtn.textContent = `Reclaim ₹${totalBenefit.toLocaleString('en-IN')} / month`;
+  }
+
+  // Bind Event Listeners
+  [sliderTeam, sliderRate, sliderHours].forEach(slider => {
+    slider.addEventListener('input', recalculate);
+  });
+
+  // Run initial state load
+  recalculate();
+}
+
+/* ==========================================
    10. Price Switches (Monthly vs Annually)
    ========================================== */
 function initPricingToggle() {
@@ -1463,14 +1544,14 @@ function initMouseGlow() {
   const glow = document.getElementById('mouse-glow-light');
   if (!glow) return;
 
+  // Optimize mouse tracker using quickTo to avoid object creation overhead on mousemove
+  const quickX = gsap.quickTo(glow, "x", { duration: 0.4, ease: "power2.out" });
+  const quickY = gsap.quickTo(glow, "y", { duration: 0.4, ease: "power2.out" });
+
   // Track cursor position with smooth delay (0.4s lag vector)
   window.addEventListener('mousemove', (e) => {
-    gsap.to(glow, {
-      x: e.clientX,
-      y: e.clientY,
-      duration: 0.4,
-      ease: "power2.out"
-    });
+    quickX(e.clientX);
+    quickY(e.clientY);
   });
 
   // Fade on mouse enters/leaves the window
@@ -1495,6 +1576,17 @@ function initMouseGlow() {
 function initHero3DWebGLScene() {
   const container = document.getElementById('hero-3d-canvas-container');
   if (!container) return;
+
+  // IntersectionObserver to pause Three.js rendering when out of viewport
+  let isSceneVisible = true;
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        isSceneVisible = entry.isIntersecting;
+      });
+    }, { threshold: 0.05 });
+    observer.observe(container);
+  }
 
   const width = container.clientWidth;
   const height = container.clientHeight;
@@ -1684,6 +1776,9 @@ function initHero3DWebGLScene() {
 
   function animate() {
     requestAnimationFrame(animate);
+
+    // Skip all animation logic and rendering if the canvas is out of the viewport
+    if (!isSceneVisible) return;
 
     const time = clock.getElapsedTime();
 

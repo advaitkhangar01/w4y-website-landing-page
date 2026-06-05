@@ -143,6 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderProjectDropdown();
   renderProjectMilestones();
   updateOverviewStats();
+  initHRAndFinanceRoom();
 
   // 5. System Clock (IST Synchronizer)
   function initSystemClock() {
@@ -539,6 +540,220 @@ document.addEventListener('DOMContentLoaded', () => {
       locksCard.style.borderColor = 'rgba(239, 68, 68, 0.2)';
     } else {
       locksCard.style.borderColor = 'var(--db-border)';
+    }
+  }
+
+  // 11. HR, Finance & Audit Control Room Controllers
+  function initHRAndFinanceRoom() {
+    // A. Chat Mention System
+    const chatScroller = document.getElementById('chat-scroller');
+    const inputChatMsg = document.getElementById('input-chat-msg');
+    const btnSendChat = document.getElementById('btn-send-chat');
+
+    if (btnSendChat && inputChatMsg) {
+      function sendChatMessage() {
+        const text = inputChatMsg.value.trim();
+        if (!text) return;
+
+        // Post chat bubble
+        const bubble = document.createElement('div');
+        bubble.innerHTML = `<span style="font-weight:700; color:#142334;">Admin:</span> <span style="color:#475569;">${text}</span>`;
+        chatScroller.appendChild(bubble);
+        chatScroller.scrollTop = chatScroller.scrollHeight;
+
+        inputChatMsg.value = '';
+
+        // Check for mentions (e.g., @Rahul or @Vikram)
+        const match = text.match(/@(\w+)\s+(.+)/);
+        if (match) {
+          const user = match[1];
+          const taskName = match[2];
+          
+          const project = projectsData.find(p => p.id === activeProjectId);
+          const activeStage = project.stages.find(s => s.number === project.currentStage);
+          
+          const newDocId = 'doc_extracted_' + Date.now();
+          activeStage.checklist.push({
+            id: newDocId,
+            name: taskName.charAt(0).toUpperCase() + taskName.slice(1),
+            desc: `Assigned via chat mention to ${user}.`,
+            status: 'pending',
+            filename: null
+          });
+
+          // Re-render
+          setTimeout(() => {
+            renderProjectMilestones();
+            updateOverviewStats();
+            writeLogEntry(`@MENTION COMPILER: Extracted and assigned task "${taskName}" to ${user} on project "${project.name}".`, "success");
+          }, 400);
+        }
+      }
+
+      btnSendChat.addEventListener('click', sendChatMessage);
+      inputChatMsg.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendChatMessage();
+      });
+    }
+
+    // B. Leave Request Approvals
+    const btnApproveLeave = document.getElementById('btn-approve-leave');
+    const btnRejectLeave = document.getElementById('btn-reject-leave');
+    const leaveReq1 = document.getElementById('leave-req-1');
+
+    if (btnApproveLeave && btnRejectLeave && leaveReq1) {
+      btnApproveLeave.addEventListener('click', () => {
+        leaveReq1.innerHTML = `
+          <div>
+            <p style="font-size:11px; font-weight:700; color:#142334; margin:0;">Ashwini K. (Employee)</p>
+            <p style="font-size:9px; color:#64748b; margin:2px 0 0 0;">Medical Leave • 2 Days</p>
+          </div>
+          <span style="font-size: 9px; font-weight: 800; color: #10B981; text-transform: uppercase; background: rgba(16,185,129,0.08); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(16,185,129,0.15);">Approved</span>
+        `;
+        // Increment unpaid leaves in the calculator
+        const prSliderLeaves = document.getElementById('pr-slider-leaves');
+        if (prSliderLeaves) {
+          prSliderLeaves.value = parseInt(prSliderLeaves.value) + 2;
+          recalculatePayroll();
+        }
+        writeLogEntry("HR LEAVE APPROVAL: Medical leave authorized for Ashwini K. (2 Days). Recalculating payroll...", "success");
+      });
+
+      btnRejectLeave.addEventListener('click', () => {
+        leaveReq1.innerHTML = `
+          <div>
+            <p style="font-size:11px; font-weight:700; color:#142334; margin:0;">Ashwini K. (Employee)</p>
+            <p style="font-size:9px; color:#64748b; margin:2px 0 0 0;">Medical Leave • 2 Days</p>
+          </div>
+          <span style="font-size: 9px; font-weight: 800; color: #ef4444; text-transform: uppercase; background: rgba(239,68,68,0.08); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(239,68,68,0.15);">Rejected</span>
+        `;
+        writeLogEntry("HR LEAVE DEFIANCE: Medical leave rejected for Ashwini K.", "warning");
+      });
+    }
+
+    // C. Payroll Calculator
+    const prSliderLates = document.getElementById('pr-slider-lates');
+    const prSliderLeaves = document.getElementById('pr-slider-leaves');
+    const prInputBonus = document.getElementById('pr-input-bonus');
+
+    const prLabelLates = document.getElementById('pr-label-lates');
+    const prLabelLeaves = document.getElementById('pr-label-leaves');
+    const prOutDeductions = document.getElementById('pr-out-deductions');
+    const prOutNet = document.getElementById('pr-out-net');
+    
+    const btnProcessPayroll = document.getElementById('btn-process-payroll');
+    const preflightPayrollStatus = document.getElementById('preflight-payroll-status');
+    const preflightPayrollIcon = document.getElementById('preflight-payroll-icon');
+
+    let payrollPaid = false;
+
+    function recalculatePayroll() {
+      if (payrollPaid || !prSliderLates || !prSliderLeaves || !prInputBonus) return;
+
+      const lates = parseInt(prSliderLates.value);
+      const leaves = parseInt(prSliderLeaves.value);
+      const bonus = parseInt(prInputBonus.value) || 0;
+
+      prLabelLates.textContent = `${lates} day${lates !== 1 ? 's' : ''}`;
+      prLabelLeaves.textContent = `${leaves} day${leaves !== 1 ? 's' : ''}`;
+
+      const lateDeduction = lates * 500;
+      const leaveDeduction = leaves * 1666;
+      const totalDeductions = lateDeduction + leaveDeduction;
+      const netPayout = Math.max(0, 50000 - totalDeductions + bonus);
+
+      prOutDeductions.textContent = `-₹${totalDeductions.toLocaleString('en-IN')}`;
+      prOutNet.textContent = `₹${netPayout.toLocaleString('en-IN')}`;
+
+      return netPayout;
+    }
+
+    if (prSliderLates && prSliderLeaves && prInputBonus) {
+      [prSliderLates, prSliderLeaves].forEach(slider => {
+        slider.addEventListener('input', recalculatePayroll);
+      });
+      prInputBonus.addEventListener('input', recalculatePayroll);
+    }
+
+    if (btnProcessPayroll) {
+      btnProcessPayroll.addEventListener('click', () => {
+        const finalNet = recalculatePayroll();
+        payrollPaid = true;
+
+        btnProcessPayroll.disabled = true;
+        btnProcessPayroll.textContent = "Payroll Processed (PAID)";
+        btnProcessPayroll.style.background = "#cbd5e1";
+        btnProcessPayroll.style.color = "#475569";
+        btnProcessPayroll.style.cursor = "not-allowed";
+
+        if (prSliderLates) prSliderLates.disabled = true;
+        if (prSliderLeaves) prSliderLeaves.disabled = true;
+        if (prInputBonus) prInputBonus.disabled = true;
+
+        // Update preflight checks
+        if (preflightPayrollStatus && preflightPayrollIcon) {
+          preflightPayrollStatus.textContent = "0 Pending";
+          preflightPayrollStatus.style.color = "#10B981";
+          preflightPayrollIcon.innerHTML = `<i data-lucide="check" style="width:14px; height:14px; color:#10B981;"></i> Staff Payroll Processing Status`;
+          if (window.lucide) window.lucide.createIcons();
+        }
+
+        writeLogEntry(`PAYROLL PROCESSOR: Disbursed ₹${finalNet.toLocaleString('en-IN')} net salary to Rahul N. for operational logs compliance. Status: PAID.`, "success");
+      });
+    }
+
+    // D. 15-Day Audit Shield Lock & Month-End Close
+    const toggleAuditShield = document.getElementById('toggle-audit-shield');
+    const inputCloseReason = document.getElementById('input-close-reason');
+    const btnCloseMonth = document.getElementById('btn-close-month');
+
+    if (toggleAuditShield) {
+      toggleAuditShield.addEventListener('change', () => {
+        // Toggle locked classes on top panels (attendance table and milestone stepper)
+        const attendancePanel = document.querySelector('.db-grid-container .db-panel:nth-child(1)');
+        const stepperPanel = document.querySelector('.db-grid-container .db-panel:nth-child(2)');
+
+        if (toggleAuditShield.checked) {
+          if (attendancePanel) attendancePanel.classList.add('audit-locked');
+          if (stepperPanel) stepperPanel.classList.add('audit-locked');
+          writeLogEntry("AUDIT SHIELD SECURED: Activated 15-day strict compliance logs lockout. Historical modifications disabled.", "warning");
+        } else {
+          if (attendancePanel) attendancePanel.classList.remove('audit-locked');
+          if (stepperPanel) stepperPanel.classList.remove('audit-locked');
+          writeLogEntry("AUDIT SHIELD UNSECURED: Historical modifications enabled by Administrator credentials.", "system");
+        }
+      });
+    }
+
+    if (btnCloseMonth && inputCloseReason) {
+      btnCloseMonth.addEventListener('click', () => {
+        // Check preflight payroll
+        if (!payrollPaid) {
+          const reason = inputCloseReason.value.trim();
+          if (!reason) {
+            alert("🔒 Closure Blocked!\nA mandatory authorization key/override reason is required to execute monthly closure with pending staff payroll.");
+            writeLogEntry("MONTHLY CLOSURE ABORTED: Pending payroll requires authorization overrides.", "warning");
+            return;
+          }
+        }
+
+        // Lock ALL panels on dashboard!
+        const panels = document.querySelectorAll('.db-panel');
+        panels.forEach(p => {
+          p.classList.add('audit-locked');
+        });
+        
+        btnCloseMonth.disabled = true;
+        btnCloseMonth.textContent = "JUNE PERIOD AUDITED & SECURED";
+        btnCloseMonth.style.background = "#0c1221";
+        btnCloseMonth.style.color = "#a1a1aa";
+        
+        if (toggleAuditShield) toggleAuditShield.disabled = true;
+        inputCloseReason.disabled = true;
+
+        writeLogEntry("MONTHLY CLOSURE SUCCESSFUL: Locked ledger periods for June 2026. Generated compliance snapshots.", "success");
+        alert("🔒 Month closed successfully!\nAll June operations have been audited, snapshotted, and frozen in read-only compliance lock.");
+      });
     }
   }
 

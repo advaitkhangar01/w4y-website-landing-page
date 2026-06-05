@@ -870,3 +870,44 @@ body {
 .db-footer-links a:hover {
   color: var(--db-text);
 }
+
+/* W4Y Audit Shield & Toggle Switches */
+.switch-container input:checked + .slider-toggle-btn {
+  background-color: #10B981;
+}
+
+.switch-container input:checked + .slider-toggle-btn:before {
+  transform: translateX(20px);
+}
+
+.slider-toggle-btn:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.db-panel.audit-locked::after {
+  content: "🔒 LEDGER AUDITED & LOCKED";
+  position: absolute;
+  inset: 0;
+  background: rgba(240, 242, 245, 0.85);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #142334;
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  z-index: 100;
+  pointer-events: all;
+  border-radius: 12px;
+  border: 1px dashed rgba(20, 35, 52, 0.15);
+}

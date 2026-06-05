@@ -140,6 +140,31 @@
         </div>
       </div>
 
+      <!-- Threaded Workspace Discussion Chat (Auto-Task Extraction) -->
+      <div style="margin: 20px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; background: #f8fafc;">
+        <h3 style="font-size: 11px; font-weight: 700; color: #142334; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+          <i data-lucide="database" style="width: 14px; height: 14px; color: #475569;"></i> Threaded @Mention Workspace Chat
+        </h3>
+        
+        <div class="chat-discussion-scroller" id="chat-scroller" style="max-height: 120px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; background: #fff; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 11px; line-height: 1.4;">
+          <div>
+            <span style="font-weight:700; color:#142334;">Design Head:</span>
+            <span style="color:#475569;">Welcome to the milestone room! All design uploads should be posted here.</span>
+          </div>
+          <div>
+            <span style="font-weight:700; color:#142334;">Rahul (Employee):</span>
+            <span style="color:#475569;">Stage 1 site measurements are complete. Ready for permit checks.</span>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:8px;">
+          <input type="text" id="input-chat-msg" placeholder="Type e.g., @Rahul upload site coordinates" style="flex:1; padding:8px 12px; border:1px solid #cbd5e1; border-radius:6px; font-size:11px; outline:none;">
+          <button class="db-btn btn-success" id="btn-send-chat" style="padding: 8px 16px; font-size: 11px; font-weight: 700; background: #142334; border-radius: 6px; border: none; color: white; cursor: pointer;">
+            Send
+          </button>
+        </div>
+      </div>
+
       <!-- Stage Progression Control -->
       <div class="milestone-action-bar">
         <div class="lock-indicator" id="progression-lock-message">
@@ -150,6 +175,176 @@
         </button>
       </div>
 
+    </div>
+
+  </main>
+
+  <!-- HR & FINANCE CONTROL SECTION -->
+  <div class="db-section-header" style="max-width: 1440px; margin: 40px auto 20px; padding: 0 20px;">
+    <h2 style="font-family:'Satoshi', sans-serif; font-size: 18px; font-weight: 800; color: #142334; display: flex; align-items: center; gap: 8px; margin:0;">
+      <i data-lucide="indian-rupee" style="color: #10B981;"></i> HR, Finance & Audit Command Center
+    </h2>
+    <p style="font-size: 12px; color: #64748b; margin-top: 4px; margin-bottom:0;">Automated payroll adjustments, leave approvals, and monthly close audit switches.</p>
+  </div>
+
+  <main class="db-grid-container" style="margin-top: 0; margin-bottom: 40px;">
+    
+    <!-- LEFT PANEL: Leaves & Payroll Simulator -->
+    <div class="db-panel" id="db-panel-payroll">
+      <div class="panel-header">
+        <div class="panel-title-block">
+          <h2 class="panel-title"><i data-lucide="users"></i> HR Leaves & Payroll Desk</h2>
+          <p class="panel-desc">Approve employee leaves and dynamically compute salaried deductions.</p>
+        </div>
+      </div>
+
+      <!-- Leaves Split Section -->
+      <div class="payroll-split-container" style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; padding: 20px;">
+        
+        <!-- Leave Requests Sub-card -->
+        <div class="sub-card" style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; background: #f8fafc;">
+          <h3 style="font-size: 12px; font-weight: 700; color: #142334; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; margin-top: 0;">
+            <i data-lucide="calendar" style="width: 14px; height: 14px; color: #475569;"></i> Leave Requests Inbox
+          </h3>
+          <div class="leave-requests-list" style="display:flex; flex-direction:column; gap:10px;">
+            <!-- Request 1 -->
+            <div class="leave-request-row" id="leave-req-1" style="display:flex; justify-content:space-between; align-items:center; background:#fff; border:1px solid #e2e8f0; padding:10px 12px; border-radius:8px;">
+              <div>
+                <p style="font-size:11px; font-weight:700; color:#142334; margin:0;">Ashwini K. (Employee)</p>
+                <p style="font-size:9px; color:#64748b; margin:2px 0 0 0;">Medical Leave • 2 Days</p>
+              </div>
+              <div style="display:flex; gap:6px;">
+                <button class="db-btn btn-success" id="btn-approve-leave" style="padding: 4px 8px; font-size: 9px; font-weight: 700; height:auto; min-height:0; cursor:pointer;">Approve</button>
+                <button class="db-btn btn-danger" id="btn-reject-leave" style="padding: 4px 8px; font-size: 9px; font-weight: 700; background: #ef4444; border:none; height:auto; min-height:0; cursor:pointer;">Reject</button>
+              </div>
+            </div>
+            <!-- Request 2 (Already Approved) -->
+            <div class="leave-request-row" style="display:flex; justify-content:space-between; align-items:center; background:#fff; border:1px solid #e2e8f0; padding:10px 12px; border-radius:8px; opacity:0.75;">
+              <div>
+                <p style="font-size:11px; font-weight:700; color:#142334; margin:0;">Sahil M. (Employee)</p>
+                <p style="font-size:9px; color:#64748b; margin:2px 0 0 0;">Casual Leave • 1 Day</p>
+              </div>
+              <span style="font-size: 9px; font-weight: 800; color: #10B981; text-transform: uppercase; background: rgba(16,185,129,0.08); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(16,185,129,0.15);">Approved</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payroll Calculator Sub-card -->
+        <div class="sub-card" style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; background: #f8fafc;">
+          <h3 style="font-size: 12px; font-weight: 700; color: #142334; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; margin-top: 0;">
+            <i data-lucide="calculator" style="width: 14px; height: 14px; color: #475569;"></i> Salary Calculator
+          </h3>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div style="display:flex; justify-content:space-between; font-size:11px;">
+              <span style="font-weight:600; color:#475569;">Employee Card:</span>
+              <span style="font-weight:700; color:#142334;">Rahul N. (Salaried)</span>
+            </div>
+            <!-- Sliders -->
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:10px; font-weight:600; margin-bottom:4px;">
+                <span>Late Check-ins:</span>
+                <span id="pr-label-lates" style="color:#ef4444;">0 days</span>
+              </div>
+              <input type="range" id="pr-slider-lates" min="0" max="10" value="0" style="width:100%; height:4px; accent-color:#142334; cursor:pointer;">
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:10px; font-weight:600; margin-bottom:4px;">
+                <span>Unpaid Leave Days:</span>
+                <span id="pr-label-leaves" style="color:#ef4444;">0 days</span>
+              </div>
+              <input type="range" id="pr-slider-leaves" min="0" max="5" value="0" style="width:100%; height:4px; accent-color:#142334; cursor:pointer;">
+            </div>
+            <!-- Incentive Input -->
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:10px; font-weight:600;">
+              <span>Add Performance Bonus:</span>
+              <input type="number" id="pr-input-bonus" value="0" step="500" min="0" style="width:70px; padding:3px 6px; border:1px solid #cbd5e1; border-radius:4px; text-align:right; font-family:monospace; font-size:11px;">
+            </div>
+
+            <!-- Calculation Output -->
+            <div style="background:#fff; border:1px solid #e2e8f0; padding:10px; border-radius:8px; margin-top:4px;">
+              <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b; margin-bottom:4px;">
+                <span>Base Salary:</span>
+                <span style="font-family:monospace;">₹50,000</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:10px; color:#ef4444; margin-bottom:4px;">
+                <span>Deductions:</span>
+                <span style="font-family:monospace;" id="pr-out-deductions">-₹0</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:#10B981; border-top:1px dashed #cbd5e1; padding-top:6px; margin-top:6px;">
+                <span>Net Payable Payout:</span>
+                <span style="font-family:monospace;" id="pr-out-net">₹50,000</span>
+              </div>
+            </div>
+
+            <button class="db-btn btn-success" id="btn-process-payroll" style="width:100%; padding:8px; font-size:11px; font-weight:700; height:auto; min-height:0; cursor:pointer;">
+              Record & Process Payroll
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: Audit Lock & Monthly Close -->
+    <div class="db-panel" id="db-panel-audit">
+      <div class="panel-header">
+        <div class="panel-title-block">
+          <h2 class="panel-title"><i data-lucide="shield-check"></i> Ledger Audit Shield</h2>
+          <p class="panel-desc">Activate 15-day strict transaction blocks and close audit files.</p>
+        </div>
+      </div>
+
+      <div style="padding: 20px; display:flex; flex-direction:column; gap:20px;">
+        
+        <!-- Toggle lock -->
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:16px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h4 style="font-size:12px; font-weight:700; color:#142334; display:flex; align-items:center; gap:6px; margin:0;">
+              <i data-lucide="lock" style="width:14px; height:14px; color:#475569;"></i> 15-Day Audit Shield
+            </h4>
+            <p style="font-size:10px; color:#64748b; margin-top:2px; margin-bottom:0;">Froze editing general expenses older than 15 days.</p>
+          </div>
+          <!-- Toggle switch styled simply -->
+          <label class="switch-container" style="position:relative; display:inline-block; width:44px; height:24px; cursor:pointer;">
+            <input type="checkbox" id="toggle-audit-shield" style="opacity:0; width:0; height:0;">
+            <span class="slider-toggle-btn" style="position:absolute; inset:0; background-color:#cbd5e1; border-radius:34px; transition:0.3s;"></span>
+          </label>
+        </div>
+
+        <!-- Month Close Preflight Card -->
+        <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; background: #f8fafc;">
+          <h4 style="font-size: 12px; font-weight: 700; color: #142334; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; margin-top:0;">
+            <i data-lucide="activity" style="width: 14px; height: 14px; color: #475569;"></i> Month-End Close Preflight
+          </h4>
+          
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <!-- Preflight items -->
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px;">
+              <span style="display:flex; align-items:center; gap:6px;"><i data-lucide="check" style="width:14px; height:14px; color:#10B981;"></i> Expense Categorization Audited</span>
+              <span style="font-weight:700; color:#10B981;">Verified</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px;">
+              <span style="display:flex; align-items:center; gap:6px;"><i data-lucide="check" style="width:14px; height:14px; color:#10B981;"></i> Client Invoice Ledger Audits</span>
+              <span style="font-weight:700; color:#10B981;">Verified</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px;">
+              <span style="display:flex; align-items:center; gap:6px;" id="preflight-payroll-icon"><i data-lucide="shield-alert" style="width:14px; height:14px; color:#eab308;"></i> Staff Payroll Processing Status</span>
+              <span style="font-weight:700; color:#eab308;" id="preflight-payroll-status">1 Pending</span>
+            </div>
+
+            <!-- Auth Input -->
+            <div style="margin-top:4px;">
+              <label style="font-size:9px; font-weight:700; color:#475569; display:block; margin-bottom:4px; text-transform:uppercase;">Closure Authorization Key / Override Reason:</label>
+              <input type="text" id="input-close-reason" placeholder="Mandatory if payroll is pending..." style="width:100%; padding:8px 12px; border:1px solid #cbd5e1; border-radius:6px; font-size:11px; outline:none; box-sizing:border-box;">
+            </div>
+
+            <button class="db-btn btn-success" id="btn-close-month" style="width:100%; padding:10px; font-size:11px; font-weight:700; background:#142334; color:#fff; border:none; margin-top:4px; border-radius:6px; cursor:pointer; height:auto; min-height:0;">
+              Execute Month-End Audit Freeze
+            </button>
+          </div>
+        </div>
+
+      </div>
     </div>
 
   </main>

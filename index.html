@@ -320,10 +320,10 @@
                 <img src="/assets/images/employee_dashboard.png" alt="Employee View" class="console-img" data-role="employee">
 
                 <!-- Videos Layer (Module-Based) -->
-                <video src="/assets/videos/attendance_section.mp4" class="console-video" data-module="vid-attendance" loop muted></video>
-                <video src="/assets/videos/project_section.mp4" class="console-video" data-module="vid-projects" loop muted></video>
-                <video src="/assets/videos/accounting_section.mp4" class="console-video" data-module="vid-accounting" loop muted></video>
-                <video src="/assets/videos/invoice_section.mp4" class="console-video" data-module="vid-invoice" loop muted></video>
+                <video src="/assets/videos/attendance_section.mp4" class="console-video" data-module="vid-attendance" loop muted preload="none"></video>
+                <video src="/assets/videos/project_section.mp4" class="console-video" data-module="vid-projects" loop muted preload="none"></video>
+                <video src="/assets/videos/accounting_section.mp4" class="console-video" data-module="vid-accounting" loop muted preload="none"></video>
+                <video src="/assets/videos/invoice_section.mp4" class="console-video" data-module="vid-invoice" loop muted preload="none"></video>
 
                 <!-- Video Control Bar Overlay (Only active when playing videos) -->
                 <div class="video-control-layer">
@@ -503,14 +503,21 @@
         <!-- Interactive Sandbox Panel -->
         <div id="benefits-interactive-side">
           <div class="sandbox-card glass-panel reveal-scale">
-            <div class="sandbox-header">
-              <span class="sandbox-title"><i data-lucide="sparkles"></i> W4Y Live Interactive Sandbox</span>
+            <div class="sandbox-header" style="display:flex; justify-content:space-between; align-items:center; padding: 12px 20px;">
+              <div style="display:flex; gap:8px;">
+                <button class="sandbox-tab-btn active" id="tab-btn-signature">
+                  Signature Studio
+                </button>
+                <button class="sandbox-tab-btn" id="tab-btn-roi">
+                  ROI Calculator
+                </button>
+              </div>
               <span class="sandbox-status"><span class="sandbox-status-dot"></span>Active Sandbox</span>
             </div>
             
             <div class="sandbox-body">
               <!-- Widget A: Split-Panel Interactive Signature Studio -->
-              <div class="signature-sandbox-container">
+              <div class="signature-sandbox-container" id="sandbox-panel-signature">
                 <div class="sandbox-split-container">
                   
                   <!-- Left Panel: Signature Canvas & Brush Settings -->
@@ -619,6 +626,88 @@
                       </div>
                     </div>
 
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Widget A2: Operations ROI Calculator -->
+              <div class="roi-sandbox-container" id="sandbox-panel-roi" style="display: none; padding: 20px;">
+                <div class="sandbox-split-container">
+                  
+                  <!-- Left Panel: Sliders -->
+                  <div class="sandbox-draw-panel" style="border-right: 1px solid var(--frost-mist); padding-right: 20px;">
+                    <h4 class="sandbox-widget-title" style="margin-bottom: 24px;">Adjust Your Studio Metrics</h4>
+                    
+                    <!-- Slider 1: Team Size -->
+                    <div style="margin-bottom: 24px;">
+                      <div class="slider-header-row" style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:12px; font-weight:600; color:var(--midnight-blue);">
+                        <span>Team Size:</span>
+                        <span id="roi-val-team" style="color:var(--sage-green);">15 staff members</span>
+                      </div>
+                      <input type="range" id="roi-slider-team" min="1" max="100" value="15" class="thickness-slider" style="width:100%; height:6px;">
+                    </div>
+
+                    <!-- Slider 2: Average Hourly Rate -->
+                    <div style="margin-bottom: 24px;">
+                      <div class="slider-header-row" style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:12px; font-weight:600; color:var(--midnight-blue);">
+                        <span>Avg. Hourly Management Rate:</span>
+                        <span id="roi-val-rate" style="color:var(--sage-green);">₹500 / hr</span>
+                      </div>
+                      <input type="range" id="roi-slider-rate" min="200" max="2500" step="50" value="500" class="thickness-slider" style="width:100%; height:6px;">
+                    </div>
+
+                    <!-- Slider 3: Weekly Administrative Hours -->
+                    <div style="margin-bottom: 24px;">
+                      <div class="slider-header-row" style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:12px; font-weight:600; color:var(--midnight-blue);">
+                        <span>Manual Hours / Staff / Month:</span>
+                        <span id="roi-val-hours" style="color:var(--sage-green);">12 hours</span>
+                      </div>
+                      <input type="range" id="roi-slider-hours" min="2" max="40" value="12" class="thickness-slider" style="width:100%; height:6px;">
+                    </div>
+                  </div>
+
+                  <!-- Right Panel: Live Output & Call to Action -->
+                  <div class="sandbox-document-panel" style="padding-left: 20px; display:flex; flex-direction:column; justify-content:space-between;">
+                    <h4 class="sandbox-widget-title" style="margin-bottom: 16px;">Estimated Monthly Savings</h4>
+                    
+                    <div class="live-analysis-console" style="flex:1; margin-bottom:20px; padding:20px;">
+                      <div class="console-log-header">DYNAMIC ROI PROJECTIONS</div>
+                      
+                      <div style="display:grid; grid-template-rows: repeat(3, 1fr); gap: 16px; margin-top:16px;">
+                        
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom:8px;">
+                          <div>
+                            <div style="font-size:10px; color:rgba(255,255,255,0.4); text-transform:uppercase; font-weight:700;">Admin Time Saved</div>
+                            <div style="font-size:11px; color:rgba(255,255,255,0.7);">Hours reclaimed from tracking</div>
+                          </div>
+                          <div style="font-size:20px; font-weight:800; color:#10B981; font-family:'Satoshi', sans-serif;" id="roi-out-time">180 hrs</div>
+                        </div>
+
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom:8px;">
+                          <div>
+                            <div style="font-size:10px; color:rgba(255,255,255,0.4); text-transform:uppercase; font-weight:700;">Capital Reclaimed</div>
+                            <div style="font-size:11px; color:rgba(255,255,255,0.7);">Reduced admin overhead cost</div>
+                          </div>
+                          <div style="font-size:20px; font-weight:800; color:#10B981; font-family:'Satoshi', sans-serif;" id="roi-out-capital">₹90,000</div>
+                        </div>
+
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                          <div>
+                            <div style="font-size:10px; color:rgba(255,255,255,0.4); text-transform:uppercase; font-weight:700;">Leakage Shield</div>
+                            <div style="font-size:11px; color:rgba(255,255,255,0.7);">Spoof-proof check-in safeguards</div>
+                          </div>
+                          <div style="font-size:20px; font-weight:800; color:#10B981; font-family:'Satoshi', sans-serif;" id="roi-out-leakage">₹36,000</div>
+                        </div>
+
+                      </div>
+                    </div>
+
+                    <div style="width:100%;">
+                      <a href="#contact" class="btn btn-primary" id="roi-cta-btn" style="width:100%; display:block; text-align:center; padding:14px; font-weight:700;">
+                        Reclaim ₹126,000 / month
+                      </a>
+                    </div>
                   </div>
 
                 </div>
@@ -939,19 +1028,19 @@
           </div>
           <div class="pricing-card-features">
             <div class="pricing-feature">
-              <i data-lucide="check"></i> Up to 8 active employees
+              <i data-lucide="check"></i> Up to 8 active staff members
             </div>
             <div class="pricing-feature">
-              <i data-lucide="check"></i> Location-based check-in zone
+              <i data-lucide="check"></i> Spoof-Proof Geofenced Clock-In
             </div>
             <div class="pricing-feature">
-              <i data-lucide="check"></i> Dynamic project stages
+              <i data-lucide="check"></i> Sequential Milestone Gatekeeping
             </div>
             <div class="pricing-feature">
-              <i data-lucide="check"></i> Unified client balance tracker
+              <i data-lucide="check"></i> Unified Ledger & Profit Tracker
             </div>
             <div class="pricing-feature">
-              <i data-lucide="check"></i> Preconfigured tax invoice splits
+              <i data-lucide="check"></i> Auto GST Split (CGST/SGST/IGST)
             </div>
           </div>
           <div class="magnetic-wrapper" style="width:100%;">
@@ -970,22 +1059,22 @@
           </div>
           <div class="pricing-card-features">
             <div class="pricing-feature">
-              <i data-lucide="check"></i> Up to 25 active employees
+              <i data-lucide="check"></i> Up to 25 active staff members
             </div>
             <div class="pricing-feature">
-              <i data-lucide="check"></i> Geofencing + buffer zone triggers
+              <i data-lucide="check"></i> Dynamic Buffer Geofence Radar
             </div>
             <div class="pricing-feature">
-              <i data-lucide="check"></i> Sequential step locks safeguards
+              <i data-lucide="check"></i> Sequential Milestones Auto-Lock
             </div>
             <div class="pricing-feature">
-              <i data-lucide="check"></i> 15-day strict expense audit locks
+              <i data-lucide="check"></i> 15-Day Audit Shield & Expense Lock
             </div>
             <div class="pricing-feature">
-              <i data-lucide="check"></i> On-screen digital client signatures
+              <i data-lucide="check"></i> Digital Signature & Consent Studio
             </div>
             <div class="pricing-feature">
-              <i data-lucide="check"></i> Multi-page high-fidelity PDF prints
+              <i data-lucide="check"></i> A4 Exportable PDF Client Prints
             </div>
           </div>
           <div class="magnetic-wrapper" style="width:100%;">

@@ -736,61 +736,80 @@ function initRoiCalculator() {
    ========================================== */
 function initPricingToggle() {
   const toggle = document.getElementById('pricing-switch-btn');
-  const labelMonthly = document.getElementById('price-label-monthly');
-  const labelYearly = document.getElementById('price-label-yearly');
+  const labelTotal = document.getElementById('price-label-monthly');
+  const labelMonthly = document.getElementById('price-label-yearly');
   
-  const studioPrice = document.getElementById('price-studio');
-  const officePrice = document.getElementById('price-office');
+  const price1yr = document.getElementById('price-1yr');
+  const price3yr = document.getElementById('price-3yr');
+  const price5yr = document.getElementById('price-5yr');
+
+  const period1yr = document.getElementById('period-1yr');
+  const period3yr = document.getElementById('period-3yr');
+  const period5yr = document.getElementById('period-5yr');
   
   if (!toggle) return;
 
-  const prices = {
-    monthly: { studio: "49", office: "99" },
-    yearly: { studio: "39", office: "79" }
+  const pricingData = {
+    total: {
+      prices: { p1yr: "50,000", p3yr: "1,20,000", p5yr: "1,50,000" },
+      periods: { p1yr: "/ year", p3yr: "/ 3 years", p5yr: "/ 5 years" }
+    },
+    monthly: {
+      prices: { p1yr: "4,167", p3yr: "3,333", p5yr: "2,500" },
+      periods: { p1yr: "/ month", p3yr: "/ month", p5yr: "/ month" }
+    }
   };
 
-  function updatePrices(billingMode) {
-    studioPrice.style.opacity = '0';
-    officePrice.style.opacity = '0';
+  function updatePricingDisplay(billingMode) {
+    const priceElements = [price1yr, price3yr, price5yr];
+    const periodElements = [period1yr, period3yr, period5yr];
+
+    priceElements.forEach(el => { if (el) el.style.opacity = '0'; });
+    periodElements.forEach(el => { if (el) el.style.opacity = '0'; });
 
     setTimeout(() => {
-      studioPrice.textContent = prices[billingMode].studio;
-      officePrice.textContent = prices[billingMode].office;
+      if (price1yr) price1yr.textContent = pricingData[billingMode].prices.p1yr;
+      if (price3yr) price3yr.textContent = pricingData[billingMode].prices.p3yr;
+      if (price5yr) price5yr.textContent = pricingData[billingMode].prices.p5yr;
+
+      if (period1yr) period1yr.textContent = pricingData[billingMode].periods.p1yr;
+      if (period3yr) period3yr.textContent = pricingData[billingMode].periods.p3yr;
+      if (period5yr) period5yr.textContent = pricingData[billingMode].periods.p5yr;
       
-      studioPrice.style.opacity = '1';
-      officePrice.style.opacity = '1';
+      priceElements.forEach(el => { if (el) el.style.opacity = '1'; });
+      periodElements.forEach(el => { if (el) el.style.opacity = '1'; });
     }, 200);
   }
 
   toggle.addEventListener('click', () => {
-    const isYearlyActive = toggle.classList.toggle('active');
+    const isMonthlyActive = toggle.classList.toggle('active');
     
-    if (isYearlyActive) {
-      labelYearly.classList.add('active');
-      labelMonthly.classList.remove('active');
-      updatePrices('yearly');
-    } else {
+    if (isMonthlyActive) {
       labelMonthly.classList.add('active');
-      labelYearly.classList.remove('active');
-      updatePrices('monthly');
+      labelTotal.classList.remove('active');
+      updatePricingDisplay('monthly');
+    } else {
+      labelTotal.classList.add('active');
+      labelMonthly.classList.remove('active');
+      updatePricingDisplay('total');
+    }
+  });
+
+  labelTotal.addEventListener('click', () => {
+    if (toggle.classList.contains('active')) {
+      toggle.classList.remove('active');
+      labelTotal.classList.add('active');
+      labelMonthly.classList.remove('active');
+      updatePricingDisplay('total');
     }
   });
 
   labelMonthly.addEventListener('click', () => {
-    if (toggle.classList.contains('active')) {
-      toggle.classList.remove('active');
-      labelMonthly.classList.add('active');
-      labelYearly.classList.remove('active');
-      updatePrices('monthly');
-    }
-  });
-
-  labelYearly.addEventListener('click', () => {
     if (!toggle.classList.contains('active')) {
       toggle.classList.add('active');
-      labelYearly.classList.add('active');
-      labelMonthly.classList.remove('active');
-      updatePrices('yearly');
+      labelMonthly.classList.add('active');
+      labelTotal.classList.remove('active');
+      updatePricingDisplay('monthly');
     }
   });
 }

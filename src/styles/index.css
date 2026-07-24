@@ -1995,6 +1995,7 @@ section {
   font-size: 14px;
   color: var(--muted-steel);
   margin-left: 8px;
+  transition: opacity 0.2s ease;
 }
 
 .pricing-card-features {
